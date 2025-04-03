@@ -49,4 +49,4 @@ const InviteUserModal = ({ channelId, channelName, onClose }) => {
       );
       setFilteredUsers(filtered);
     }
-  }, [searchQuery, users]);
+  }, [searchQuery, users])};
