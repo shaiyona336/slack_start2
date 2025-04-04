@@ -8,7 +8,7 @@ class Config:
     
     # Database
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'postgresql://postgres:postgres@localhost/slack_clone'
+        'postgresql://postgres:postgres@postgres/slack_clone'     #'postgresql://postgres:postgres@localhost/slack_clone' :: 'postgresql://postgres:postgres@postgres/slack_clone'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # JWT

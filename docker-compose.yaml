@@ -1,4 +1,4 @@
-#version: '3.8'
+version: '3.8'
 
 services:
   # PostgreSQL Database
@@ -6,15 +6,15 @@ services:
     image: postgres:15-alpine
     container_name: slack-clone-postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: slack_clone
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-slack_clone}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,10 +24,10 @@ services:
     build: ./backend
     container_name: slack-clone-backend
     environment:
-      - FLASK_DEBUG=false
-      - DATABASE_URL=postgresql://postgres:postgres@postgres/slack_clone
-      - SECRET_KEY=change-me-in-production
-      - JWT_SECRET_KEY=change-me-in-production
+      - FLASK_DEBUG=${FLASK_DEBUG:-false}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres/${POSTGRES_DB:-slack_clone}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-change-me-in-production}
     ports:
       - "5000:5000"
     depends_on:
@@ -39,6 +39,8 @@ services:
   frontend:
     build: ./frontend
     container_name: slack-clone-frontend
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:5000/api}
     ports:
       - "80:80"
     depends_on:
