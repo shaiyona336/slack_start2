@@ -11,7 +11,7 @@ RUN npm install
 COPY . .
 
 # Set environment variables
-ENV REACT_APP_API_URL=http://backend:5000/api
+ENV REACT_APP_API_URL=http://localhost:5000/api
 
 # Build the application
 RUN npm run build

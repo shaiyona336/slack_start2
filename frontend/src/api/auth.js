@@ -1,12 +1,25 @@
-import api from './api';
+import api, { BASE_URL } from './api';
 
 const AuthAPI = {
   // Register a new user
+  // register: async (userData) => {
+  //   try {
+  //     const response = await api.post('/auth/register', userData);
+  //     return response.data;
+  //   } catch (error) {
+  //     throw error.response?.data || { success: false, message: 'An error occurred during registration' };
+  //   }
+  // },
   register: async (userData) => {
+    console.log('Trying to register with:', userData);
+    console.log('Using base URL:', BASE_URL); // Add this to check what URL is being used
     try {
       const response = await api.post('/auth/register', userData);
+      console.log('Registration response:', response);
       return response.data;
     } catch (error) {
+      console.error('Registration error:', error);
+      console.error('Error response:', error.response?.data);
       throw error.response?.data || { success: false, message: 'An error occurred during registration' };
     }
   },
