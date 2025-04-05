@@ -77,21 +77,50 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Login user
+  // const login = async (credentials) => {
+  //   setError(null);
+  //   try {
+  //     const result = await AuthAPI.login(credentials);
+  //     if (result.success) {
+  //       // Save tokens
+  //       localStorage.setItem('token', result.access_token);
+  //       localStorage.setItem('refreshToken', result.refresh_token);
+
+  //       // Set user
+  //       setUser(result.user);
+
+  //       // Connect to Socket.IO
+  //       socketService.connect(result.access_token);
+
+  //       return { success: true };
+  //     }
+  //   } catch (err) {
+  //     setError(err.message || 'Login failed');
+  //     return { success: false, error: err.message || 'Login failed' };
+  //   }
+  // };
+
   const login = async (credentials) => {
     setError(null);
     try {
       const result = await AuthAPI.login(credentials);
       if (result.success) {
+        console.log("Login successful, tokens received:", {
+          access_token: result.access_token ? "Present" : "Missing",
+          refresh_token: result.refresh_token ? "Present" : "Missing"
+        });
+        
         // Save tokens
         localStorage.setItem('token', result.access_token);
         localStorage.setItem('refreshToken', result.refresh_token);
-
+  
         // Set user
         setUser(result.user);
-
+        console.log("User set:", result.user);
+  
         // Connect to Socket.IO
         socketService.connect(result.access_token);
-
+  
         return { success: true };
       }
     } catch (err) {

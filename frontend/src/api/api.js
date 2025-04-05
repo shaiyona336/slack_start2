@@ -15,12 +15,27 @@ const api = axios.create({
 });
 
 // Add a request interceptor to add auth token to every request
+// api.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem('token');
+//     if (token) {
+//       config.headers['Authorization'] = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+    console.log("Sending request with token:", token ? "Present" : "Missing");
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    console.log("Request URL:", config.url);
     return config;
   },
   (error) => {

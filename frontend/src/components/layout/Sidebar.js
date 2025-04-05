@@ -17,31 +17,67 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   // Fetch channels and direct messages
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     try {
+  //       // Fetch channels
+  //       const channelsResult = await ChannelsAPI.getUserChannels();
+  //       if (channelsResult.success) {
+  //         setChannels(channelsResult.channels);
+  //       }
+
+  //       // Fetch direct messages
+  //       const dmResult = await ChannelsAPI.getUserDirectMessages();
+  //       if (dmResult.success) {
+  //         setDirectMessages(dmResult.direct_messages);
+  //       }
+  //     } catch (err) {
+  //       setError('Failed to load workspace data');
+  //       console.error('Error loading sidebar data:', err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        console.log("Attempting to fetch channels...");
         // Fetch channels
         const channelsResult = await ChannelsAPI.getUserChannels();
+        console.log("Channels response:", channelsResult);
         if (channelsResult.success) {
           setChannels(channelsResult.channels);
         }
-
+  
+        console.log("Attempting to fetch direct messages...");
         // Fetch direct messages
         const dmResult = await ChannelsAPI.getUserDirectMessages();
+        console.log("DM response:", dmResult);
         if (dmResult.success) {
           setDirectMessages(dmResult.direct_messages);
         }
       } catch (err) {
+        console.error("Detailed error:", err);
+        if (err.response) {
+          console.error("Error response:", err.response.data);
+          console.error("Error status:", err.response.status);
+        }
         setError('Failed to load workspace data');
-        console.error('Error loading sidebar data:', err);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, []);
+
+  
 
   const handleLogout = async () => {
     await logout();

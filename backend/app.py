@@ -16,8 +16,16 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
-    # Initialize CORS
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    # Initialize CORS properly (keep this)
+    #CORS(app, resources={r"/*": {"origins": "*"}})
+    CORS(app, 
+     resources={r"/*": {
+         "origins": "*",
+         "allow_headers": ["Content-Type", "Authorization"],
+         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+     }},
+     supports_credentials=True
+)
     
     # Initialize extensions with app
     db.init_app(app)
