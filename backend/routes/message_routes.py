@@ -7,7 +7,7 @@ message_bp = Blueprint('messages', __name__)
 @message_bp.route('/channel/<int:channel_id>', methods=['POST'])
 @jwt_required()
 def send_channel_message(channel_id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     
     if not data:
@@ -24,7 +24,7 @@ def send_channel_message(channel_id):
 @message_bp.route('/channel/<int:channel_id>', methods=['GET'])
 @jwt_required()
 def get_channel_messages(channel_id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 50, type=int)
     
@@ -34,7 +34,7 @@ def get_channel_messages(channel_id):
 @message_bp.route('/direct/<int:chat_id>', methods=['POST'])
 @jwt_required()
 def send_direct_message(chat_id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     
     if not data:
@@ -51,7 +51,7 @@ def send_direct_message(chat_id):
 @message_bp.route('/direct/<int:chat_id>', methods=['GET'])
 @jwt_required()
 def get_direct_messages(chat_id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 50, type=int)
     
@@ -61,7 +61,7 @@ def get_direct_messages(chat_id):
 @message_bp.route('/<int:message_id>/reactions', methods=['POST'])
 @jwt_required()
 def add_reaction(message_id):
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     
     if not data:

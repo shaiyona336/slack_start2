@@ -18,6 +18,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - slack-network
 
   # Backend Flask-SocketIO API
   backend:
@@ -34,24 +36,27 @@ services:
       postgres:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - slack-network
 
   # Frontend React App
   frontend:
     build: ./frontend
     container_name: slack-clone-frontend
     environment:
-      #- REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:5000/api}
-      #- REACT_APP_API_URL=${REACT_APP_API_URL:-http://backend:5000/api}
-
-      #- REACT_APP_API_URL=http://backend:5000/api
+      # Using localhost since the frontend is served to the host browser
       - REACT_APP_API_URL=http://localhost:5000/api
-
-
     ports:
       - "80:80"
     depends_on:
       - backend
     restart: unless-stopped
+    networks:
+      - slack-network
+
+networks:
+  slack-network:
+    driver: bridge
 
 volumes:
   postgres_data:

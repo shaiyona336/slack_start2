@@ -1,0 +1,672 @@
+{
+    "info": {
+      "_postman_id": "df67e894-1c23-4a66-89ec-6c0b3f7290a9",
+      "name": "Slack Clone API",
+      "description": "A collection for testing the Slack Clone API endpoints",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:5000/api",
+        "type": "string"
+      },
+      {
+        "key": "token",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "refresh_token",
+        "value": "",
+        "type": "string"
+      }
+    ],
+    "item": [
+      {
+        "name": "Health Check",
+        "request": {
+          "method": "GET",
+          "url": {
+            "raw": "{{base_url}}/health",
+            "host": ["{{base_url}}"],
+            "path": ["health"]
+          },
+          "description": "Check if the API is running"
+        },
+        "response": []
+      },
+      {
+        "name": "Authentication",
+        "item": [
+          {
+            "name": "Register",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = pm.response.json();",
+                    "if (jsonData.success) {",
+                    "    pm.collectionVariables.set(\"token\", jsonData.access_token);",
+                    "    pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"display_name\": \"Test User\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/register",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "register"]
+              },
+              "description": "Register a new user"
+            },
+            "response": []
+          },
+          {
+            "name": "Login",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = pm.response.json();",
+                    "if (jsonData.success) {",
+                    "    pm.collectionVariables.set(\"token\", jsonData.access_token);",
+                    "    pm.collectionVariables.set(\"refresh_token\", jsonData.refresh_token);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/login",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "login"]
+              },
+              "description": "Login with existing user"
+            },
+            "response": []
+          },
+          {
+            "name": "Refresh Token",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = pm.response.json();",
+                    "if (jsonData.success) {",
+                    "    pm.collectionVariables.set(\"token\", jsonData.access_token);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{refresh_token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/auth/refresh",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "refresh"]
+              },
+              "description": "Refresh the access token using refresh token"
+            },
+            "response": []
+          },
+          {
+            "name": "Logout",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/auth/logout",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "logout"]
+              },
+              "description": "Logout the current user"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "User",
+        "item": [
+          {
+            "name": "Get Current User",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users/me",
+                "host": ["{{base_url}}"],
+                "path": ["users", "me"]
+              },
+              "description": "Get the current user's information"
+            },
+            "response": []
+          },
+          {
+            "name": "Update Status",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"status\": \"online\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/users/status",
+                "host": ["{{base_url}}"],
+                "path": ["users", "status"]
+              },
+              "description": "Update user status (online, away, offline, busy)"
+            },
+            "response": []
+          },
+          {
+            "name": "Get All Users",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users?query=",
+                "host": ["{{base_url}}"],
+                "path": ["users"],
+                "query": [
+                  {
+                    "key": "query",
+                    "value": ""
+                  }
+                ]
+              },
+              "description": "Get all users or search by query"
+            },
+            "response": []
+          },
+          {
+            "name": "Get User by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users/:user_id",
+                "host": ["{{base_url}}"],
+                "path": ["users", ":user_id"],
+                "variable": [
+                  {
+                    "key": "user_id",
+                    "value": "1"
+                  }
+                ]
+              },
+              "description": "Get a specific user by ID"
+            },
+            "response": []
+          },
+          {
+            "name": "Update Profile",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"display_name\": \"Updated Name\",\n    \"avatar_url\": \"https://example.com/avatar.jpg\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/users/me",
+                "host": ["{{base_url}}"],
+                "path": ["users", "me"]
+              },
+              "description": "Update the current user's profile"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Channels",
+        "item": [
+          {
+            "name": "Create Channel",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = pm.response.json();",
+                    "if (jsonData.success) {",
+                    "    pm.collectionVariables.set(\"channel_id\", jsonData.channel.id);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"name\": \"general\",\n    \"description\": \"General channel for discussion\",\n    \"is_private\": false\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/channels",
+                "host": ["{{base_url}}"],
+                "path": ["channels"]
+              },
+              "description": "Create a new channel"
+            },
+            "response": []
+          },
+          {
+            "name": "Get User Channels",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/channels",
+                "host": ["{{base_url}}"],
+                "path": ["channels"]
+              },
+              "description": "Get all channels for the current user"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Channel by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/channels/:channel_id",
+                "host": ["{{base_url}}"],
+                "path": ["channels", ":channel_id"],
+                "variable": [
+                  {
+                    "key": "channel_id",
+                    "value": "{{channel_id}}"
+                  }
+                ]
+              },
+              "description": "Get a specific channel by ID"
+            },
+            "response": []
+          },
+          {
+            "name": "Add Channel Member",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"user_id\": 2\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/channels/:channel_id/members",
+                "host": ["{{base_url}}"],
+                "path": ["channels", ":channel_id", "members"],
+                "variable": [
+                  {
+                    "key": "channel_id",
+                    "value": "{{channel_id}}"
+                  }
+                ]
+              },
+              "description": "Add a user to a channel"
+            },
+            "response": []
+          },
+          {
+            "name": "Create Direct Message",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = pm.response.json();",
+                    "if (jsonData.success) {",
+                    "    pm.collectionVariables.set(\"dm_id\", jsonData.direct_message.id);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"recipient_id\": 2\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/channels/direct-messages",
+                "host": ["{{base_url}}"],
+                "path": ["channels", "direct-messages"]
+              },
+              "description": "Create a direct message chat with another user"
+            },
+            "response": []
+          },
+          {
+            "name": "Get User Direct Messages",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/channels/direct-messages",
+                "host": ["{{base_url}}"],
+                "path": ["channels", "direct-messages"]
+              },
+              "description": "Get all direct message chats for the current user"
+            },
+            "response": []
+          }
+        ]
+      },
+      {
+        "name": "Messages",
+        "item": [
+          {
+            "name": "Send Channel Message",
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "exec": [
+                    "var jsonData = pm.response.json();",
+                    "if (jsonData.success) {",
+                    "    pm.collectionVariables.set(\"message_id\", jsonData.message.id);",
+                    "}"
+                  ],
+                  "type": "text/javascript"
+                }
+              }
+            ],
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"content\": \"Hello, this is a test message!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/messages/channel/:channel_id",
+                "host": ["{{base_url}}"],
+                "path": ["messages", "channel", ":channel_id"],
+                "variable": [
+                  {
+                    "key": "channel_id",
+                    "value": "{{channel_id}}"
+                  }
+                ]
+              },
+              "description": "Send a message to a channel"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Channel Messages",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/messages/channel/:channel_id?page=1&per_page=50",
+                "host": ["{{base_url}}"],
+                "path": ["messages", "channel", ":channel_id"],
+                "query": [
+                  {
+                    "key": "page",
+                    "value": "1"
+                  },
+                  {
+                    "key": "per_page",
+                    "value": "50"
+                  }
+                ],
+                "variable": [
+                  {
+                    "key": "channel_id",
+                    "value": "{{channel_id}}"
+                  }
+                ]
+              },
+              "description": "Get messages from a channel with pagination"
+            },
+            "response": []
+          },
+          {
+            "name": "Send Direct Message",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"content\": \"Hello, this is a direct message!\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/messages/direct/:chat_id",
+                "host": ["{{base_url}}"],
+                "path": ["messages", "direct", ":chat_id"],
+                "variable": [
+                  {
+                    "key": "chat_id",
+                    "value": "{{dm_id}}"
+                  }
+                ]
+              },
+              "description": "Send a direct message to another user"
+            },
+            "response": []
+          },
+          {
+            "name": "Get Direct Messages",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/messages/direct/:chat_id?page=1&per_page=50",
+                "host": ["{{base_url}}"],
+                "path": ["messages", "direct", ":chat_id"],
+                "query": [
+                  {
+                    "key": "page",
+                    "value": "1"
+                  },
+                  {
+                    "key": "per_page",
+                    "value": "50"
+                  }
+                ],
+                "variable": [
+                  {
+                    "key": "chat_id",
+                    "value": "{{dm_id}}"
+                  }
+                ]
+              },
+              "description": "Get direct messages from a chat with pagination"
+            },
+            "response": []
+          },
+          {
+            "name": "Add Reaction",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n    \"reaction\": \"👍\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/messages/:message_id/reactions",
+                "host": ["{{base_url}}"],
+                "path": ["messages", ":message_id", "reactions"],
+                "variable": [
+                  {
+                    "key": "message_id",
+                    "value": "{{message_id}}"
+                  }
+                ]
+              },
+              "description": "Add a reaction to a message"
+            },
+            "response": []
+          }
+        ]
+      }
+    ]
+  }

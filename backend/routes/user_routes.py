@@ -8,7 +8,7 @@ user_bp = Blueprint('users', __name__)
 @user_bp.route('/me', methods=['GET'])
 @jwt_required()
 def get_current_user():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     user = User.query.get(user_id)
     
     if not user:
@@ -22,7 +22,7 @@ def get_current_user():
 @user_bp.route('/status', methods=['PUT'])
 @jwt_required()
 def update_status():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     
     if not data:
@@ -82,7 +82,7 @@ def get_user(user_id):
 @user_bp.route('/me', methods=['PUT'])
 @jwt_required()
 def update_profile():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
     
     if not data:

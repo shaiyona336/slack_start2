@@ -17,7 +17,7 @@ def register_connection_events(socketio):
                 
             # Decode token to get user ID
             decoded_token = decode_token(token)
-            user_id = decoded_token['sub']
+            user_id = int(decoded_token['sub'])
             
             # Get user
             user = User.query.get(user_id)
@@ -59,7 +59,7 @@ def register_connection_events(socketio):
                 
             # Decode token to get user ID
             decoded_token = decode_token(token)
-            user_id = decoded_token['sub']
+            user_id = int(decoded_token['sub'])
             
             # Get user
             user = User.query.get(user_id)
@@ -90,7 +90,7 @@ def register_connection_events(socketio):
         try:
             # Decode token to get user ID
             decoded_token = decode_token(token)
-            user_id = decoded_token['sub']
+            user_id = int(decoded_token['sub'])
             
             # Check if user is a member of the channel
             is_member = ChannelMember.query.filter_by(

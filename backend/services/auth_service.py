@@ -40,8 +40,8 @@ class AuthService:
             db.session.commit()
             
             # Generate tokens
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
             
             return {
                 'success': True,
@@ -72,8 +72,8 @@ class AuthService:
             db.session.commit()
             
             # Generate tokens
-            access_token = create_access_token(identity=user.id)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id))
+            refresh_token = create_refresh_token(identity=str(user.id))
             
             return {
                 'success': True,
@@ -91,7 +91,7 @@ class AuthService:
             return {'success': False, 'message': 'User not found'}, 404
             
         # Generate new access token
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         
         return {
             'success': True,
