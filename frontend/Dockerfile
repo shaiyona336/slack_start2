@@ -1,32 +1,42 @@
-# Build stage
-FROM node:18-alpine as build
+FROM node:16 as build
 
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package.json package-lock.json ./
-RUN npm install
+# Copy package files
+COPY package.json ./
 
-# Copy the rest of the application code
-COPY . .
+# Install dependencies with specific versions to avoid conflicts
+RUN npm install --legacy-peer-deps && \
+    npm install ajv@8.11.0 ajv-keywords@5.1.0 --legacy-peer-deps
+
+# Force reinstall of problematic packages
+RUN rm -rf node_modules/ajv node_modules/ajv-keywords && \
+    npm install ajv@8.11.0 ajv-keywords@5.1.0 --legacy-peer-deps
+
+# Now copy the source code
+COPY public ./public
+COPY src ./src
 
 # Set environment variables
-ENV REACT_APP_API_URL=http://localhost:5000/api
+ENV BROWSER=none
+ENV CI=false
 
-# Build the application
-RUN npm run build
+# Build with specific flags
+RUN NODE_OPTIONS=--max_old_space_size=4096 npm run build || npm rebuild && npm run build
 
 # Production stage
 FROM nginx:alpine
-
-# Copy built files from build stage
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Copy custom nginx config if needed
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Add a basic nginx configuration for React SPA
+RUN echo 'server { \
+    listen 80; \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html; \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/conf.d/default.conf
 
-# Expose port
 EXPOSE 80
-
-# Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
